@@ -30,7 +30,7 @@ class CitationController @Inject()(cached: Cached) extends Controller {
   }
 
   def count = Action {
-    Ok(CitationsWithLocations.count.toString)
+    Ok(CitationsWithLocations.nbTot.toString)
   }
 
   def countMulti = Action {

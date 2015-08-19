@@ -12,6 +12,7 @@ import scala.collection.mutable.ArrayBuffer
 object CitationsWithLocations {
 
   import SparkCommons.sqlContext.implicits._
+  import org.apache.spark.sql.functions._
 
 
   val conf = ConfigFactory.load();
@@ -19,7 +20,7 @@ object CitationsWithLocations {
 
   lazy val rdd = SparkCommons.sqlContext.read.parquet(path)
 
-  def count: Long = rdd.count()
+  def nbTot: Long = rdd.count()
 
   lazy val udfBinCoords = {
     val binSize = 0.25
@@ -57,8 +58,9 @@ object CitationsWithLocations {
     val newCol = udfBinCoords(df("coordinates"))
     val dfRounded = df.withColumn("roundedCoordinates", newCol).select("roundedCoordinates", "pubmedId")
     dfRounded.flatMap({ case Row(coords: List[Any], pmid: String) =>
-      if (coords.size > 7) Nil
-      else coords.toList.combinations(2).toList.map({ case c1 :: c2 :: Nil => ((c1, c2), pmid) })
+      val unqiqueCoords = coords.distinct
+      if (unqiqueCoords.size > 7) Nil
+      else unqiqueCoords.toList.combinations(2).toList.map({ case c1 :: c2 :: Nil => ((c1, c2), pmid) })
 
     }).groupByKey().map({ case (x, y) =>
       val l = x.asInstanceOf[Tuple2[(Double, Double), (Double, Double)]]
@@ -68,12 +70,27 @@ object CitationsWithLocations {
   }
 
   def countByCoords(q: String): DataFrame = {
-    val df = filterByAffiliation(q, filterByMultipleLocation(rdd))
+    val df = filterByAffiliation(q, filterByMultipleLocation(rdd.limit(1000)))
     val newCol = udfBinCoords(df("coordinates"))
     val dfRounded = df.withColumn("roundedCoordinates", newCol).select("roundedCoordinates")
-    dfRounded.select("roundedCoordinates")
-      .flatMap({ case Row(l: List[Any]) => l.map(x => (x.asInstanceOf[(Double, Double)], 1)) })
-      .reduceByKey((a, b) => a + b)
-      .toDF("coords", "count")
+
+
+//    dfRounded.groupBy("roundedCoordinates").count().toDF
+    val x = dfRounded.flatMap({ case Row(coords: List[Any]) => coords}).countByValue()
+
+    dfRounded
+//      .map({case (c:Any, n:Any) => (c, n)})
+//    println(">>>>>>>>>>"+x)
+//    println(">>>>>>>>>>"+x)
+//    println(">>>>>>>>>>"+x)
+//    println(">>>>>>>>>>"+x)
+//    println(">>>>>>>>>>"+x)
+//    println("-------===")
+//     x.take(10).foreach(println)//.map(x => x.asInstanceOf[(Double, Double)]) })
+//    dfRounded
+      //.toDF()
+//      .reduceByKey((a, b) => a + b)
+//      .map({case (c:Any, n:Int)=> (c.asInstanceOf[(Double, Double)], n)})
+//      .toDF("coords", "count")
   }
 }
