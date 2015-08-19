@@ -1,0 +1,15 @@
+# Routes
+# This file defines all application routes (Higher priority routes first)
+# ~~~~
+
+#GET        /                   demo.HelloController.index
+GET        /count                     ch.twenty.medlineGraph.explore.CitationController.count
+GET        /count-multi               ch.twenty.medlineGraph.explore.CitationController.countMulti
+#GET        /list               demo.HelloController.list
+GET        /filter/:q                 ch.twenty.medlineGraph.explore.CitationController.filterByAffiliation(q)
+GET        /geo-links/:q              ch.twenty.medlineGraph.explore.CitationController.aggregateGeoLinks(q)
+GET        /count-by-coords/:q        ch.twenty.medlineGraph.explore.CitationController.countByCoords(q)
+
+# Home page
+
+# Map static resources from the /public folder to the /assets URL path
