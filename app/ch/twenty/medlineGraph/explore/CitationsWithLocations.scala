@@ -70,27 +70,17 @@ object CitationsWithLocations {
   }
 
   def countByCoords(q: String): DataFrame = {
-    val df = filterByAffiliation(q, filterByMultipleLocation(rdd.limit(1000)))
+    val df = filterByAffiliation(q, rdd)
     val newCol = udfBinCoords(df("coordinates"))
     val dfRounded = df.withColumn("roundedCoordinates", newCol).select("roundedCoordinates")
 
+    dfRounded.explode[List[(Double, Double)], (Double, Double)]("roundedCoordinates", "roundedCoords")({
+      case l: List[(Double, Double)] => l.distinct
+    })
+      .select("roundedCoords")
+      .groupBy("roundedCoords")
+      .count()
+      .orderBy(desc("count"))
 
-//    dfRounded.groupBy("roundedCoordinates").count().toDF
-    val x = dfRounded.flatMap({ case Row(coords: List[Any]) => coords}).countByValue()
-
-    dfRounded
-//      .map({case (c:Any, n:Any) => (c, n)})
-//    println(">>>>>>>>>>"+x)
-//    println(">>>>>>>>>>"+x)
-//    println(">>>>>>>>>>"+x)
-//    println(">>>>>>>>>>"+x)
-//    println(">>>>>>>>>>"+x)
-//    println("-------===")
-//     x.take(10).foreach(println)//.map(x => x.asInstanceOf[(Double, Double)]) })
-//    dfRounded
-      //.toDF()
-//      .reduceByKey((a, b) => a + b)
-//      .map({case (c:Any, n:Int)=> (c.asInstanceOf[(Double, Double)], n)})
-//      .toDF("coords", "count")
   }
 }
