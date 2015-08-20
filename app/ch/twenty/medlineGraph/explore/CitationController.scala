@@ -50,9 +50,9 @@ class CitationController @Inject()(cached: Cached) extends Controller {
     }
   }
 
-  def countByCoords(q: String) = cached(req => "rest-" + req.uri) {
+  def countByCoords(affiliation: Option[String]) = cached(req => "rest-" + req.uri) {
     Action {
-      Ok(toJsonString(CitationsWithLocations.countByCoords(q)))
+      Ok(toJsonString(CitationsWithLocations.countByCoords(affiliation)))
     }
   }
 }

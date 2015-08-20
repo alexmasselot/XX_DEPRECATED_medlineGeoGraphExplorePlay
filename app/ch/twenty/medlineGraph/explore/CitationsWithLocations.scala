@@ -69,18 +69,23 @@ object CitationsWithLocations {
     }).toDF("coordsLinks", "pubmedIds")
   }
 
-  def countByCoords(q: String): DataFrame = {
-    val df = filterByAffiliation(q, rdd)
+  def countByCoords(affiliation: Option[String]): DataFrame = {
+    val df = affiliation match {
+      case Some(txt) => filterByAffiliation(txt, rdd)
+      case None => rdd
+    }
     val newCol = udfBinCoords(df("coordinates"))
-    val dfRounded = df.withColumn("roundedCoordinates", newCol).select("roundedCoordinates")
+    val dfRounded = df.withColumn("roundedCoordinates", newCol).select("roundedCoordinates", "pubDate.year")
 
     dfRounded.explode[List[(Double, Double)], (Double, Double)]("roundedCoordinates", "roundedCoords")({
       case l: List[(Double, Double)] => l.distinct
     })
-      .select("roundedCoords")
-      .groupBy("roundedCoords")
+      .select("roundedCoords", "year")
+      .groupBy("roundedCoords", "year")
       .count()
-      .orderBy(desc("count"))
+      .withColumnRenamed("count", "n")
+      .filter("n >= 3")
+      .orderBy(desc("n"))
 
   }
 }

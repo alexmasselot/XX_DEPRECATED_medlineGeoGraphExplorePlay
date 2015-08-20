@@ -8,7 +8,7 @@ GET        /count-multi               ch.twenty.medlineGraph.explore.CitationCon
 #GET        /list               demo.HelloController.list
 GET        /filter/:q                 ch.twenty.medlineGraph.explore.CitationController.filterByAffiliation(q)
 GET        /geo-links/:q              ch.twenty.medlineGraph.explore.CitationController.aggregateGeoLinks(q)
-GET        /count-by-coords/:q        ch.twenty.medlineGraph.explore.CitationController.countByCoords(q)
+GET        /count-by-coords        ch.twenty.medlineGraph.explore.CitationController.countByCoords(affiliation: Option[String])
 
 # Home page
 
