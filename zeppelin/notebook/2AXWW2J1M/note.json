@@ -1,0 +1,106 @@
+{
+  "paragraphs": [
+    {
+      "text": "import sqlContext.implicits._\nimport org.apache.spark.sql._\n\ncase class Point(x:Double, y:Double)\ncase class Pif(str:String, oneVal:Int, multipleVal:List[Int], points:List[Point])\n",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "editorHide": false
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1439479484629_-875827192",
+      "id": "20150813-172444_923269303",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "import sqlContext.implicits._\nimport org.apache.spark.sql._\ndefined class Point\ndefined class Pif\n"
+      },
+      "dateCreated": "Aug 13, 2015 5:24:44 PM",
+      "dateStarted": "Aug 18, 2015 8:32:20 AM",
+      "dateFinished": "Aug 18, 2015 8:32:26 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "val myData \u003d Seq(\n  Pif(\"ha\", 42, List(1,2,3), List(Point(2,3), Point(4,5))),\n  Pif(\"ho\", 21, List(2,4),   List(Point(6,7), Point(4,5))),\n  Pif(\"ha\", 24, List(4,5,6), List(Point(8,9)))\n)\n\nval df \u003d sc.parallelize(myData, 2).toDF()\nval functOneVal \u003d (x:Int)\u003d\u003e x*10\nval udfOneVal \u003d udf(functOneVal)\n\nval functDiv10 \u003d (xs:List[Double])\u003d\u003e xs.map(_ / 10.0)\nval udfDiv10 \u003d udf(functDiv10)\nsqlContext.udf.register(\"div10\", functDiv10)\n\nval functSum\u003d (xs:List[Int]) \u003d\u003e xs.map(_ * 10).sum\nval udfSum \u003d udf(functSum)\n\nval functMultipleVal\u003d (xs:List[Int]) \u003d\u003e xs.map(_ * 10)\nval udfMultipleVal \u003d udf(functMultipleVal)\n\nval functMultiplePairs\u003d (xs:List[Any]) \u003d\u003e xs.map({case Row(x:Double, y:Double) \u003d\u003e Point(x/10.0, y/10.0)})\nval udfMultiplePairs \u003d udf(functMultiplePairs)\nsqlContext.udf.register(\"div10Points\", functMultiplePairs)\n\n\ndf.withColumn(\"anotherVal\", udfOneVal($\"oneVal\")).toJSON.collect()\ndf.withColumn(\"sum10\", udfSum($\"multipleVal\")).toJSON.collect()\ndf.withColumn(\"anotherMultipleVal\", udfMultipleVal(df(\"multipleVal\"))).toJSON.collect()\ndf.withColumn(\"anotherMultiplePairs\", udfMultiplePairs(df(\"points\"))).toJSON.collect()\n\ndf.registerTempTable(\"df\") \n\nsqlContext.sql(\"select div10(points.x), div10(points.y) FROM df\").toJSON.collect()\ndf.select(\"points\").map({case Row( points:List[Any])\u003d\u003e points.map({case Row(x:Double, y:Double) \u003d\u003e Point(x/10.0, y/10.0)})}).collect()\n",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "editorHide": false
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1439362840473_-17427516",
+      "id": "20150812-090040_709754334",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "myData: Seq[Pif] \u003d List(Pif(ha,42,List(1, 2, 3),List(Point(2.0,3.0), Point(4.0,5.0))), Pif(ho,21,List(2, 4),List(Point(6.0,7.0), Point(4.0,5.0))), Pif(ha,24,List(4, 5, 6),List(Point(8.0,9.0))))\ndf: org.apache.spark.sql.DataFrame \u003d [str: string, oneVal: int, multipleVal: array\u003cint\u003e, points: array\u003cstruct\u003cx:double,y:double\u003e\u003e]\nfunctOneVal: Int \u003d\u003e Int \u003d \u003cfunction1\u003e\nudfOneVal: org.apache.spark.sql.UserDefinedFunction \u003d UserDefinedFunction(\u003cfunction1\u003e,IntegerType)\nfunctDiv10: List[Double] \u003d\u003e List[Double] \u003d \u003cfunction1\u003e\nudfDiv10: org.apache.spark.sql.UserDefinedFunction \u003d UserDefinedFunction(\u003cfunction1\u003e,ArrayType(DoubleType,false))\nres926: org.apache.spark.sql.UserDefinedFunction \u003d UserDefinedFunction(\u003cfunction1\u003e,ArrayType(DoubleType,false))\nfunctSum: List[Int] \u003d\u003e Int \u003d \u003cfunction1\u003e\nudfSum: org.apache.spark.sql.UserDefinedFunction \u003d UserDefinedFunction(\u003cfunction1\u003e,IntegerType)\nfunctMultipleVal: List[Int] \u003d\u003e List[Int] \u003d \u003cfunction1\u003e\nudfMultipleVal: org.apache.spark.sql.UserDefinedFunction \u003d UserDefinedFunction(\u003cfunction1\u003e,ArrayType(IntegerType,false))\nfunctMultiplePairs: List[Any] \u003d\u003e List[Point] \u003d \u003cfunction1\u003e\nudfMultiplePairs: org.apache.spark.sql.UserDefinedFunction \u003d UserDefinedFunction(\u003cfunction1\u003e,ArrayType(StructType(StructField(x,DoubleType,false), StructField(y,DoubleType,false)),true))\nres930: org.apache.spark.sql.UserDefinedFunction \u003d UserDefinedFunction(\u003cfunction1\u003e,ArrayType(StructType(StructField(x,DoubleType,false), StructField(y,DoubleType,false)),true))\nres933: Array[String] \u003d Array({\"str\":\"ha\",\"oneVal\":42,\"multipleVal\":[1,2,3],\"points\":[{\"x\":2.0,\"y\":3.0},{\"x\":4.0,\"y\":5.0}],\"anotherVal\":420}, {\"str\":\"ho\",\"oneVal\":21,\"multipleVal\":[2,4],\"points\":[{\"x\":6.0,\"y\":7.0},{\"x\":4.0,\"y\":5.0}],\"anotherVal\":210}, {\"str\":\"ha\",\"oneVal\":24,\"multipleVal\":[4,5,6],\"points\":[{\"x\":8.0,\"y\":9.0}],\"anotherVal\":240})\nres934: Array[String] \u003d Array({\"str\":\"ha\",\"oneVal\":42,\"multipleVal\":[1,2,3],\"points\":[{\"x\":2.0,\"y\":3.0},{\"x\":4.0,\"y\":5.0}],\"sum10\":60}, {\"str\":\"ho\",\"oneVal\":21,\"multipleVal\":[2,4],\"points\":[{\"x\":6.0,\"y\":7.0},{\"x\":4.0,\"y\":5.0}],\"sum10\":60}, {\"str\":\"ha\",\"oneVal\":24,\"multipleVal\":[4,5,6],\"points\":[{\"x\":8.0,\"y\":9.0}],\"sum10\":150})\nres935: Array[String] \u003d Array({\"str\":\"ha\",\"oneVal\":42,\"multipleVal\":[1,2,3],\"points\":[{\"x\":2.0,\"y\":3.0},{\"x\":4.0,\"y\":5.0}],\"anotherMultipleVal\":[10,20,30]}, {\"str\":\"ho\",\"oneVal\":21,\"multipleVal\":[2,4],\"points\":[{\"x\":6.0,\"y\":7.0},{\"x\":4.0,\"y\":5.0}],\"anotherMultipleVal\":[20,40]}, {\"str\":\"ha\",\"oneVal\":24,\"multipleVal\":[4,5,6],\"points\":[{\"x\":8.0,\"y\":9.0}],\"anotherMultipleVal\":[40,50,60]})\nres936: Array[String] \u003d Array({\"str\":\"ha\",\"oneVal\":42,\"multipleVal\":[1,2,3],\"points\":[{\"x\":2.0,\"y\":3.0},{\"x\":4.0,\"y\":5.0}],\"anotherMultiplePairs\":[{\"x\":0.2,\"y\":0.3},{\"x\":0.4,\"y\":0.5}]}, {\"str\":\"ho\",\"oneVal\":21,\"multipleVal\":[2,4],\"points\":[{\"x\":6.0,\"y\":7.0},{\"x\":4.0,\"y\":5.0}],\"anotherMultiplePairs\":[{\"x\":0.6,\"y\":0.7},{\"x\":0.4,\"y\":0.5}]}, {\"str\":\"ha\",\"oneVal\":24,\"multipleVal\":[4,5,6],\"points\":[{\"x\":8.0,\"y\":9.0}],\"anotherMultiplePairs\":[{\"x\":0.8,\"y\":0.9}]})\nres940: Array[String] \u003d Array({\"c0\":[0.2,0.4],\"c1\":[0.3,0.5]}, {\"c0\":[0.6,0.4],\"c1\":[0.7,0.5]}, {\"c0\":[0.8],\"c1\":[0.9]})\nres941: Array[List[Point]] \u003d Array(List(Point(0.2,0.3), Point(0.4,0.5)), List(Point(0.6,0.7), Point(0.4,0.5)), List(Point(0.8,0.9)))\n"
+      },
+      "dateCreated": "Aug 12, 2015 9:00:40 AM",
+      "dateStarted": "Aug 18, 2015 9:13:35 AM",
+      "dateFinished": "Aug 18, 2015 9:14:01 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "editorHide": false
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1439439770040_46174392",
+      "id": "20150813-062250_932117143",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT"
+      },
+      "dateCreated": "Aug 13, 2015 6:22:50 AM",
+      "dateStarted": "Aug 14, 2015 6:42:00 AM",
+      "dateFinished": "Aug 14, 2015 6:42:00 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    }
+  ],
+  "name": "aggregate and write",
+  "id": "2AXWW2J1M",
+  "angularObjects": {},
+  "config": {
+    "looknfeel": "default"
+  },
+  "info": {}
+}

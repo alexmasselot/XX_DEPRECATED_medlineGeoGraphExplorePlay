@@ -1,0 +1,316 @@
+{
+  "paragraphs": [
+    {
+      "text": "\nval sqlContext \u003d new org.apache.spark.sql.SQLContext(sc)\nval path \u003d \"/Users/amasselo/private/dev/medline-graph/data/spark/citations\"\nval citations \u003d sqlContext.read.json(path)\ncitations.printSchema()\ncitations.registerTempTable(\"citations\")\n",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "editorHide": false
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1435955447812_-158639899",
+      "id": "20150703-133047_853701097",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "sqlContext: org.apache.spark.sql.SQLContext \u003d org.apache.spark.sql.SQLContext@77da4097\npath: String \u003d /Users/amasselo/private/dev/medline-graph/data/spark/citations\ncitations: org.apache.spark.sql.DataFrame \u003d [abstractText: string, authors: array\u003cstruct\u003caffiliation:struct\u003cfirstSentence:string,orig:string\u003e,foreName:string,initials:string,lastName:string\u003e\u003e, pubDate: struct\u003cmonth:bigint,rodayle:bigint,year:bigint\u003e, pubmedId: string, title: string]\nroot\n |-- abstractText: string (nullable \u003d true)\n |-- authors: array (nullable \u003d true)\n |    |-- element: struct (containsNull \u003d true)\n |    |    |-- affiliation: struct (nullable \u003d true)\n |    |    |    |-- firstSentence: string (nullable \u003d true)\n |    |    |    |-- orig: string (nullable \u003d true)\n |    |    |-- foreName: string (nullable \u003d true)\n |    |    |-- initials: string (nullable \u003d true)\n |    |    |-- lastName: string (nullable \u003d true)\n |-- pubDate: struct (nullable \u003d true)\n |    |-- month: long (nullable \u003d true)\n |    |-- rodayle: long (nullable \u003d true)\n |    |-- year: long (nullable \u003d true)\n |-- pubmedId: string (nullable \u003d true)\n |-- title: string (nullable \u003d true)\n\n"
+      },
+      "dateCreated": "Jul 3, 2015 1:30:47 PM",
+      "dateStarted": "Aug 20, 2015 8:57:59 AM",
+      "dateFinished": "Aug 20, 2015 9:01:16 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "val affCountSample \u003d sqlContext.sql(\"SELECT pubmedId,authors.affiliation.firstSentence FROM citations\").map({ row \u003d\u003e\n     row(1) match {\n        case l:List[String] \u003d\u003e (row(0), l.filter(_ !\u003d null).distinct.size)\n         case _ \u003d\u003e (row(0), 0)\n     }\n })\n //.sample(true, 0.00001)\n affCountSample.take(5)",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "tableHide": false,
+        "editorHide": false
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1439382166677_681928995",
+      "id": "20150812-142246_99862446",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "\u003cconsole\u003e:27: warning: non-variable type argument String in type pattern List[String] is unchecked since it is eliminated by erasure\n               case l:List[String] \u003d\u003e (row(0), l.filter(_ !\u003d null).distinct.size)\n                      ^\naffCountSample: org.apache.spark.rdd.RDD[(Any, Int)] \u003d MapPartitionsRDD[12] at map at \u003cconsole\u003e:25\nres5: Array[(Any, Int)] \u003d Array((16691646,0), (16691647,0), (16691648,0), (16691649,0), (16691650,0))\n"
+      },
+      "dateCreated": "Aug 12, 2015 2:22:46 PM",
+      "dateStarted": "Aug 20, 2015 8:58:00 AM",
+      "dateFinished": "Aug 20, 2015 9:01:22 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "val histoAff \u003d affCountSample.map(_._2).countByValue()",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        }
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1439384953086_-186919756",
+      "id": "20150812-150913_530731359",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "histoAff: scala.collection.Map[Int,Long] \u003d Map(0 -\u003e 10182577, 5 -\u003e 10286, 10 -\u003e 622, 56 -\u003e 2, 142 -\u003e 1, 174 -\u003e 1, 185 -\u003e 1, 42 -\u003e 2, 24 -\u003e 21, 37 -\u003e 2, 25 -\u003e 18, 52 -\u003e 4, 14 -\u003e 196, 184 -\u003e 4, 20 -\u003e 42, 289 -\u003e 1, 29 -\u003e 10, 121 -\u003e 1, 84 -\u003e 1, 61 -\u003e 1, 89 -\u003e 1, 1 -\u003e 13015279, 6 -\u003e 5293, 60 -\u003e 3, 85 -\u003e 2, 28 -\u003e 11, 38 -\u003e 3, 70 -\u003e 1, 21 -\u003e 37, 33 -\u003e 10, 65 -\u003e 1, 9 -\u003e 970, 53 -\u003e 2, 225 -\u003e 1, 13 -\u003e 246, 41 -\u003e 2, 2 -\u003e 62353, 32 -\u003e 10, 34 -\u003e 15, 45 -\u003e 1, 64 -\u003e 1, 180 -\u003e 1, 17 -\u003e 88, 22 -\u003e 39, 44 -\u003e 6, 59 -\u003e 3, 27 -\u003e 11, 12 -\u003e 309, 49 -\u003e 1, 86 -\u003e 1, 172 -\u003e 1, 219 -\u003e 2, 76 -\u003e 4, 7 -\u003e 2833, 39 -\u003e 3, 271 -\u003e 1, 66 -\u003e 5, 3 -\u003e 38683, 35 -\u003e 6, 48 -\u003e 1, 63 -\u003e 1, 18 -\u003e 72, 50 -\u003e 2, 67 -\u003e 2, 16 -\u003e 105, 31 -\u003e 6, 11 -\u003e 436, 72 -\u003e 2, 43 -\u003e 5, 87 -\u003e 2, 218 -\u003e 1, 40 -\u003e 1, 26 -\u003e 20, 186 -\u003e 2, 55 -\u003e 1, 139 -\u003e 1, ..."
+      },
+      "dateCreated": "Aug 12, 2015 3:09:13 PM",
+      "dateStarted": "Aug 20, 2015 9:01:17 AM",
+      "dateFinished": "Aug 20, 2015 9:03:09 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "println (\"%table nb_affiliation\\tcount\\n\"+\n   histoAff.filter(p \u003d\u003e p._2\u003e50 \u0026\u0026 p._1\u003e\u003d2).map(p \u003d\u003e s\"${p._1}\\t${p._2/1000.0}\").mkString(\"\\n\")\n    +\"\\n\")",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "multiBarChart",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [
+            {
+              "name": "nb_affiliation",
+              "index": 0.0,
+              "aggr": "sum"
+            }
+          ],
+          "values": [
+            {
+              "name": "count",
+              "index": 1.0,
+              "aggr": "sum"
+            }
+          ],
+          "groups": [],
+          "scatter": {
+            "xAxis": {
+              "name": "nb_affiliation",
+              "index": 0.0,
+              "aggr": "sum"
+            },
+            "yAxis": {
+              "name": "count",
+              "index": 1.0,
+              "aggr": "sum"
+            }
+          }
+        },
+        "editorHide": false
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1439383613033_1356494509",
+      "id": "20150812-144653_108827579",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TABLE",
+        "msg": "nb_affiliation\tcount\n5\t10.286\n10\t0.622\n14\t0.196\n6\t5.293\n9\t0.97\n13\t0.246\n2\t62.353\n17\t0.088\n12\t0.309\n7\t2.833\n3\t38.683\n18\t0.072\n16\t0.105\n11\t0.436\n8\t1.577\n19\t0.063\n4\t20.785\n15\t0.151\n\n"
+      },
+      "dateCreated": "Aug 12, 2015 2:46:53 PM",
+      "dateStarted": "Aug 20, 2015 9:01:22 AM",
+      "dateFinished": "Aug 20, 2015 9:03:09 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "val affilitionsPath \u003d \"/Users/amasselo/private/dev/medline-graph/data/spark/affiliations\"\nval affiliations \u003d sqlContext.read.json(affilitionsPath)\naffiliations.printSchema()\naffiliations.registerTempTable(\"affiliation\")",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        }
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1439385350709_-1871615885",
+      "id": "20150812-151550_2099374171",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "affilitionsPath: String \u003d /Users/amasselo/private/dev/medline-graph/data/spark/affiliations\naffiliations: org.apache.spark.sql.DataFrame \u003d [affiliationShort: string, id: bigint, nbPumbmedIds: bigint, pubmedIds: array\u003cstring\u003e, resolvedLocation: struct\u003clocation:struct\u003ccity:string,coordinates:struct\u003clatitude:double,longitude:double\u003e,country:string\u003e,resolverName:string\u003e, resolverTried: array\u003cstring\u003e]\nroot\n |-- affiliationShort: string (nullable \u003d true)\n |-- id: long (nullable \u003d true)\n |-- nbPumbmedIds: long (nullable \u003d true)\n |-- pubmedIds: array (nullable \u003d true)\n |    |-- element: string (containsNull \u003d true)\n |-- resolvedLocation: struct (nullable \u003d true)\n |    |-- location: struct (nullable \u003d true)\n |    |    |-- city: string (nullable \u003d true)\n |    |    |-- coordinates: struct (nullable \u003d true)\n |    |    |    |-- latitude: double (nullable \u003d true)\n |    |    |    |-- longitude: double (nullable \u003d true)\n |    |    |-- country: string (nullable \u003d true)\n |    |-- resolverName: string (nullable \u003d true)\n |-- resolverTried: array (nullable \u003d true)\n |    |-- element: string (containsNull \u003d true)\n\n"
+      },
+      "dateCreated": "Aug 12, 2015 3:15:50 PM",
+      "dateStarted": "Aug 20, 2015 9:03:09 AM",
+      "dateFinished": "Aug 20, 2015 9:04:17 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "import sqlContext.implicits._\nimport org.apache.spark.sql._\n\naffiliations(\"affiliationShort\")\naffiliations.dtypes\n\nval pubmedIdsLoc \u003d  affiliations.filter(affiliations(\"resolvedLocation\").isNotNull).\n                    withColumn(\"lat\", affiliations(\"resolvedLocation.location.coordinates.latitude\")).\n                    withColumn(\"lng\", affiliations(\"resolvedLocation.location.coordinates.longitude\")).\n                    select(\"pubmedIds\", \"lat\", \"lng\").\n                    explode[List[Long], Long](\"pubmedIds\", \"pubmedId\")({\n                        case l:List[Long] \u003d\u003e l.toList\n                    }).\n                    drop(\"pubmedIds\")\npubmedIdsLoc.dtypes\n\n//pubmedIdsLoc.groupBy(pubmedIdsLoc(\"pubmedId\")).agg(first(\"coordinates\")).take(20).foreach(println)//.agg(array($\"pubmedId\"))\nval dfPubmedId2Coordinates \u003d pubmedIdsLoc.map({case Row(lat:Double, lng:Double, pmid:Any) \u003d\u003e (pmid.toString, (lat, lng))}).\n                                           groupByKey(1).\n                                           map({case (pmid:String, coords:Iterable[(Double, Double)]) \u003d\u003e (pmid, coords.toList.distinct)}).\n                                           toDF(\"pubmedId\", \"coordinates\")\n\n//affiliations.filter(affiliations(\"resolvedLocation\").isNotNull)\n//def fRound(binSize:Double):(ArrayBuffer[Any]) \u003d\u003e List[(Double, Double)] \u003d {\n//    { (coords: ArrayBuffer[Any]) \u003d\u003e\n//        coords.toList.map({ case Row(x: Double, y: Double) \u003d\u003e (Math.round(x / binSize) * binSize, Math.round(y / binSize) * binSize) }).distinct\n//    }\n//}\n\n//val udfRound_0_5 \u003d udf(fRound(0.5) )\n//val dfTmp2\u003ddfPubmedId2Coordinates.withColumn(\"roundedCoordinates_0_5\", udfRound_0_5(dfPubmedId2Coordinates(\"coordinates\")))\n//dfTmp2.take(5).foreach(println)\n\ndfPubmedId2Coordinates.printSchema()",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        }
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1439455246656_-211052854",
+      "id": "20150813-104046_1404535487",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "import sqlContext.implicits._\nimport org.apache.spark.sql._\nres14: org.apache.spark.sql.Column \u003d affiliationShort\nres15: Array[(String, String)] \u003d Array((affiliationShort,StringType), (id,LongType), (nbPumbmedIds,LongType), (pubmedIds,ArrayType(StringType,true)), (resolvedLocation,StructType(StructField(location,StructType(StructField(city,StringType,true), StructField(coordinates,StructType(StructField(latitude,DoubleType,true), StructField(longitude,DoubleType,true)),true), StructField(country,StringType,true)),true), StructField(resolverName,StringType,true))), (resolverTried,ArrayType(StringType,true)))\npubmedIdsLoc: org.apache.spark.sql.DataFrame \u003d [lat: double, lng: double, pubmedId: bigint]\nres17: Array[(String, String)] \u003d Array((lat,DoubleType), (lng,DoubleType), (pubmedId,LongType))\ndfPubmedId2Coordinates: org.apache.spark.sql.DataFrame \u003d [pubmedId: string, coordinates: array\u003cstruct\u003c_1:double,_2:double\u003e\u003e]\nroot\n |-- pubmedId: string (nullable \u003d true)\n |-- coordinates: array (nullable \u003d true)\n |    |-- element: struct (containsNull \u003d true)\n |    |    |-- _1: double (nullable \u003d false)\n |    |    |-- _2: double (nullable \u003d false)\n\n"
+      },
+      "dateCreated": "Aug 13, 2015 10:40:46 AM",
+      "dateStarted": "Aug 20, 2015 9:03:10 AM",
+      "dateFinished": "Aug 20, 2015 9:04:19 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "dfPubmedId2Coordinates.write.parquet(\"/Users/amasselo/private/dev/medline-graph/data/spark/processed/pubmedid2coords.parquet\")",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        }
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1439470680979_1438306176",
+      "id": "20150813-145800_2041722755",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": ""
+      },
+      "dateCreated": "Aug 13, 2015 2:58:00 PM",
+      "dateStarted": "Aug 20, 2015 9:04:17 AM",
+      "dateFinished": "Aug 20, 2015 9:07:34 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "//we cannot have twice the same key name\nval dfTmp \u003d dfPubmedId2Coordinates.withColumn(\"pmid\", dfPubmedId2Coordinates(\"pubmedId\")).drop(\"pubmedId\")\nval dfJoined \u003d citations.join(dfTmp,\n                              citations(\"pubmedId\") \u003d\u003d\u003d dfTmp(\"pmid\")).\n                              drop(\"pmid\")\n                              \n\ndfJoined.write.json(\"/Users/amasselo/private/dev/medline-graph/data/spark/processed/citations-with-coordinates.json\")",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        }
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1439483691231_-124959924",
+      "id": "20150813-183451_1643067104",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "dfTmp: org.apache.spark.sql.DataFrame \u003d [coordinates: array\u003cstruct\u003c_1:double,_2:double\u003e\u003e, pmid: string]\ndfJoined: org.apache.spark.sql.DataFrame \u003d [abstractText: string, authors: array\u003cstruct\u003caffiliation:struct\u003cfirstSentence:string,orig:string\u003e,foreName:string,initials:string,lastName:string\u003e\u003e, pubDate: struct\u003cmonth:bigint,rodayle:bigint,year:bigint\u003e, pubmedId: string, title: string, coordinates: array\u003cstruct\u003c_1:double,_2:double\u003e\u003e]\n"
+      },
+      "dateCreated": "Aug 13, 2015 6:34:51 PM",
+      "dateStarted": "Aug 20, 2015 9:29:28 AM",
+      "dateFinished": "Aug 20, 2015 9:39:23 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        }
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1439997067290_-1281907407",
+      "id": "20150819-171107_322391780",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT"
+      },
+      "dateCreated": "Aug 19, 2015 5:11:07 PM",
+      "dateStarted": "Aug 20, 2015 9:07:35 AM",
+      "dateFinished": "Aug 20, 2015 9:14:24 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    }
+  ],
+  "name": "01 citations/affiliations loc reconciliation",
+  "id": "2A94M5J1Z",
+  "angularObjects": {},
+  "config": {
+    "looknfeel": "default"
+  },
+  "info": {}
+}

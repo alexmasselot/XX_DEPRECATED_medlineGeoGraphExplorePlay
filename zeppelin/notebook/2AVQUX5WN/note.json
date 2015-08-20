@@ -1,0 +1,103 @@
+{
+  "paragraphs": [
+    {
+      "text": "val sqlContext \u003d new org.apache.spark.sql.SQLContext(sc)\nval path \u003d \"/Users/amasselo/private/dev/medline-graph/data/spark/processed/citations-with-coordinates.json\"\nsqlContext.read.json(path).write.parquet(\"/Users/amasselo/private/dev/medline-graph/data/spark/processed/citations-with-coordinates.parquet\")\n",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        }
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1439557199336_-213635971",
+      "id": "20150814-145959_1484040811",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "sqlContext: org.apache.spark.sql.SQLContext \u003d org.apache.spark.sql.SQLContext@bd7af43\npath: String \u003d /Users/amasselo/private/dev/medline-graph/data/spark/processed/citations-with-coordinates.json\n"
+      },
+      "dateCreated": "Aug 14, 2015 2:59:59 PM",
+      "dateStarted": "Aug 20, 2015 9:40:26 AM",
+      "dateFinished": "Aug 20, 2015 9:47:50 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "import sqlContext.implicits._\nimport scala.collection.mutable.ArrayBuffer\nval df \u003d sqlContext.read.parquet(\"/Users/amasselo/private/dev/medline-graph/data/spark/processed/citations-with-coordinates.parquet\")\ndf.dtypes\nval func:(ArrayBuffer[(Double, Double)]\u003d\u003e Int) \u003d (l:ArrayBuffer[(Double, Double)]) \u003d\u003e l.size\nval udfFunc \u003d udf(func)\n\ndf.withColumn(\"nbCoordinates\", udfFunc($\"coordinates\")).write.parquet(\"/Users/amasselo/private/dev/medline-graph/data/spark/processed/citations-with-coordinates-actual.parquet\")",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        }
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1439557301032_291644959",
+      "id": "20150814-150141_1433141206",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "import sqlContext.implicits._\nimport scala.collection.mutable.ArrayBuffer\ndf: org.apache.spark.sql.DataFrame \u003d [abstractText: string, authors: array\u003cstruct\u003caffiliation:struct\u003cfirstSentence:string,orig:string\u003e,foreName:string,initials:string,lastName:string\u003e\u003e, coordinates: array\u003cstruct\u003c_1:double,_2:double\u003e\u003e, pubDate: struct\u003cmonth:bigint,rodayle:bigint,year:bigint\u003e, pubmedId: string, title: string]\nres55: Array[(String, String)] \u003d Array((abstractText,StringType), (authors,ArrayType(StructType(StructField(affiliation,StructType(StructField(firstSentence,StringType,true), StructField(orig,StringType,true)),true), StructField(foreName,StringType,true), StructField(initials,StringType,true), StructField(lastName,StringType,true)),true)), (coordinates,ArrayType(StructType(StructField(_1,DoubleType,true), StructField(_2,DoubleType,true)),true)), (pubDate,StructType(StructField(month,LongType,true), StructField(rodayle,LongType,true), StructField(year,LongType,true))), (pubmedId,StringType), (title,StringType))\nfunc: scala.collection.mutable.ArrayBuffer[(Double, Double)] \u003d\u003e Int \u003d \u003cfunction1\u003e\nudfFunc: org.apache.spark.sql.UserDefinedFunction \u003d UserDefinedFunction(\u003cfunction1\u003e,IntegerType)\n"
+      },
+      "dateCreated": "Aug 14, 2015 3:01:41 PM",
+      "dateStarted": "Aug 20, 2015 11:13:51 AM",
+      "dateFinished": "Aug 20, 2015 11:22:15 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        }
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1439560516443_-413390170",
+      "id": "20150814-155516_1238530973",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT"
+      },
+      "dateCreated": "Aug 14, 2015 3:55:16 PM",
+      "dateStarted": "Aug 20, 2015 9:47:51 AM",
+      "dateFinished": "Aug 20, 2015 10:48:00 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    }
+  ],
+  "name": "02 json 2 parquet",
+  "id": "2AVQUX5WN",
+  "angularObjects": {},
+  "config": {
+    "looknfeel": "default"
+  },
+  "info": {}
+}

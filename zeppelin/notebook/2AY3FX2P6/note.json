@@ -1,0 +1,232 @@
+{
+  "paragraphs": [
+    {
+      "text": "val sqlContext \u003d new org.apache.spark.sql.SQLContext(sc)\nval path \u003d \"/Users/amasselo/private/dev/medline-graph/data/spark/processed/citations-with-coordinates-actual.parquet\"\nval dfOrig \u003d sqlContext.read.parquet(path)\ndfOrig.printSchema()\n",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        }
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1439563152806_-42935584",
+      "id": "20150814-163912_1411131558",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "sqlContext: org.apache.spark.sql.SQLContext \u003d org.apache.spark.sql.SQLContext@1b9d62ff\npath: String \u003d /Users/amasselo/private/dev/medline-graph/data/spark/processed/citations-with-coordinates-actual.parquet\ndfOrig: org.apache.spark.sql.DataFrame \u003d [abstractText: string, authors: array\u003cstruct\u003caffiliation:struct\u003cfirstSentence:string,orig:string\u003e,foreName:string,initials:string,lastName:string\u003e\u003e, coordinates: array\u003cstruct\u003c_1:double,_2:double\u003e\u003e, pubDate: struct\u003cmonth:bigint,rodayle:bigint,year:bigint\u003e, pubmedId: string, title: string, nbCoordinates: int]\nroot\n |-- abstractText: string (nullable \u003d true)\n |-- authors: array (nullable \u003d true)\n |    |-- element: struct (containsNull \u003d true)\n |    |    |-- affiliation: struct (nullable \u003d true)\n |    |    |    |-- firstSentence: string (nullable \u003d true)\n |    |    |    |-- orig: string (nullable \u003d true)\n |    |    |-- foreName: string (nullable \u003d true)\n |    |    |-- initials: string (nullable \u003d true)\n |    |    |-- lastName: string (nullable \u003d true)\n |-- coordinates: array (nullable \u003d true)\n |    |-- element: struct (containsNull \u003d true)\n |    |    |-- _1: double (nullable \u003d true)\n |    |    |-- _2: double (nullable \u003d true)\n |-- pubDate: struct (nullable \u003d true)\n |    |-- month: long (nullable \u003d true)\n |    |-- rodayle: long (nullable \u003d true)\n |    |-- year: long (nullable \u003d true)\n |-- pubmedId: string (nullable \u003d true)\n |-- title: string (nullable \u003d true)\n |-- nbCoordinates: integer (nullable \u003d true)\n\n"
+      },
+      "dateCreated": "Aug 14, 2015 4:39:12 PM",
+      "dateStarted": "Aug 18, 2015 2:26:36 PM",
+      "dateFinished": "Aug 18, 2015 2:26:50 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "dfOrig.filter(\"nbCoordinates \u003e 1\").count()\nval countPerYear \u003d dfOrig.groupBy(s\"pubDate.year\").agg(count(\"nbCoordinates\")).map({\n    case Row(y:Long, n:Long)\u003d\u003e (y ,n)\n    case Row(null, n:Long)  \u003d\u003e (0L ,n)\n    \n}).collect()\n",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        }
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1439563282000_-2146590972",
+      "id": "20150814-164122_589838086",
+      "result": {
+        "code": "ERROR",
+        "type": "TEXT",
+        "msg": "res2: Long \u003d 60790\n\u003cconsole\u003e:30: error: not found: value Row\n           case Row(y:Long, n:Long)\u003d\u003e (y ,n)\n                ^\n"
+      },
+      "dateCreated": "Aug 14, 2015 4:41:22 PM",
+      "dateStarted": "Aug 18, 2015 2:26:37 PM",
+      "dateFinished": "Aug 18, 2015 2:26:58 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "print(\"%table year\\tcount\\n\"+(countPerYear.toList.filter(p\u003d\u003e p._2 \u003e200 \u0026 p._1\u003e0).map(p\u003d\u003e s\"${p._1}\\t${p._2}\").mkString(\"\\n\"))+\"\\n\")\n",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "multiBarChart",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [
+            {
+              "name": "year",
+              "index": 0.0,
+              "aggr": "sum"
+            }
+          ],
+          "values": [
+            {
+              "name": "count",
+              "index": 1.0,
+              "aggr": "sum"
+            }
+          ],
+          "groups": [],
+          "scatter": {
+            "xAxis": {
+              "name": "year",
+              "index": 0.0,
+              "aggr": "sum"
+            },
+            "yAxis": {
+              "name": "count",
+              "index": 1.0,
+              "aggr": "sum"
+            }
+          }
+        }
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1439566613657_-891529669",
+      "id": "20150814-173653_242382700",
+      "result": {
+        "code": "ERROR",
+        "type": "TEXT",
+        "msg": "\u003cconsole\u003e:22: error: not found: value countPerYear\n              print(\"%table year\\tcount\\n\"+(countPerYear.toList.filter(p\u003d\u003e p._2 \u003e200 \u0026 p._1\u003e0).map(p\u003d\u003e s\"${p._1}\\t${p._2}\").mkString(\"\\n\"))+\"\\n\")\n                                            ^\n"
+      },
+      "dateCreated": "Aug 14, 2015 5:36:53 PM",
+      "dateStarted": "Aug 18, 2015 2:26:50 PM",
+      "dateFinished": "Aug 18, 2015 2:26:58 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "import sqlContext.implicits._\nimport scala.collection.mutable.ArrayBuffer\nval funcAffContains:(ArrayBuffer[String]\u003d\u003e Boolean) \u003d (xs:ArrayBuffer[String])\u003d\u003exs.toList.exists(s \u003d\u003e s!\u003d null \u0026\u0026 s.toLowerCase.contains(\"genentech\"))\nval udfFuncAffContains \u003d udf(funcAffContains)\n\nval dfSubset \u003d dfOrig.filter(\"nbCoordinates \u003e\u003d2\").filter(udfFuncAffContains(dfOrig(\"authors.affiliation.orig\"))).cache()",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        }
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1439568109477_-729636870",
+      "id": "20150814-180149_42228298",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "import sqlContext.implicits._\nimport scala.collection.mutable.ArrayBuffer\nfuncAffContains: scala.collection.mutable.ArrayBuffer[String] \u003d\u003e Boolean \u003d \u003cfunction1\u003e\nudfFuncAffContains: org.apache.spark.sql.UserDefinedFunction \u003d UserDefinedFunction(\u003cfunction1\u003e,BooleanType)\ndfSubset: org.apache.spark.sql.DataFrame \u003d [abstractText: string, authors: array\u003cstruct\u003caffiliation:struct\u003cfirstSentence:string,orig:string\u003e,foreName:string,initials:string,lastName:string\u003e\u003e, coordinates: array\u003cstruct\u003c_1:double,_2:double\u003e\u003e, pubDate: struct\u003cmonth:bigint,rodayle:bigint,year:bigint\u003e, pubmedId: string, title: string, nbCoordinates: int]\n"
+      },
+      "dateCreated": "Aug 14, 2015 6:01:49 PM",
+      "dateStarted": "Aug 18, 2015 2:26:58 PM",
+      "dateFinished": "Aug 18, 2015 2:27:00 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "import sqlContext.implicits._\nimport org.apache.spark.sql._\nimport scala.collection.mutable.ArrayBuffer\n\n    val binSize\u003d0.25 //0.25 is ~40km in SF\n//val functMultiplePairs\u003d (xs:List[Any]) \u003d\u003e xs.map({case Row(x:Double, y:Double) \u003d\u003e Point(x/10.0, y/10.0)})\n\ncase class GeoCoords(lat:Double, lng:Double)\ncase class GeoLink(from:GeoCoords, to:GeoCoords)\n//sparkConf.registerKryoClasses(Seq(classOf[GeoCoords], classOf[GeoLink]))\n\n\nval funcRoundCoordinates:(ArrayBuffer[Any]) \u003d\u003e List[(Double, Double)] \u003d \n        (coords:ArrayBuffer[Any])\u003d\u003ecoords.toList.map({case Row(x:Double, y:Double)\u003d\u003e(Math.round(x/binSize)*binSize, Math.round(y/binSize)*binSize)})\nval udfRoundCoordinates\u003dudf(funcRoundCoordinates)\n\nval dfRounded \u003d dfSubset.withColumn(\"roundedCoordinates\", udfRoundCoordinates(dfSubset(\"coordinates\"))).select(\"roundedCoordinates\", \"pubmedId\");\ndfRounded.printSchema()\ndfRounded.flatMap ({case Row(coords:List[Any], pmid:String) \u003d\u003e \n          if(coords.size \u003e 7) Nil\n          else coords.toList.combinations(2).toList.map({case c1::c2::Nil \u003d\u003e ((c1, c2), pmid)})\n    \n}).groupByKey().map({case (x, y) \u003d\u003e \n   val l \u003d x.asInstanceOf[Tuple2[(Double, Double), (Double, Double)]]\n   (l, y.toList)\n    \n}).toDF(\"coordsLinks\", \"pubmedIds\").toJSON.take(20)\n",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        }
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1439631041420_867300339",
+      "id": "20150815-113041_1544729675",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "import sqlContext.implicits._\nimport org.apache.spark.sql._\nimport scala.collection.mutable.ArrayBuffer\nbinSize: Double \u003d 0.25\ndefined class GeoCoords\ndefined class GeoLink\nfuncRoundCoordinates: scala.collection.mutable.ArrayBuffer[Any] \u003d\u003e List[(Double, Double)] \u003d \u003cfunction1\u003e\nudfRoundCoordinates: org.apache.spark.sql.UserDefinedFunction \u003d UserDefinedFunction(\u003cfunction1\u003e,ArrayType(StructType(StructField(_1,DoubleType,false), StructField(_2,DoubleType,false)),true))\ndfRounded: org.apache.spark.sql.DataFrame \u003d [roundedCoordinates: array\u003cstruct\u003c_1:double,_2:double\u003e\u003e, pubmedId: string]\nroot\n |-- roundedCoordinates: array (nullable \u003d true)\n |    |-- element: struct (containsNull \u003d true)\n |    |    |-- _1: double (nullable \u003d false)\n |    |    |-- _2: double (nullable \u003d false)\n |-- pubmedId: string (nullable \u003d true)\n\n\u003cconsole\u003e:376: warning: match may not be exhaustive.\nIt would fail on the following input: List(_, _, _)\n                        else coords.toList.combinations(2).toList.map({case c1::c2::Nil \u003d\u003e ((c1, c2), pmid)})\n                                                                      ^\nres364: Array[String] \u003d Array({\"coordsLinks\":{\"_1\":{\"_1\":40.75,\"_2\":-74.0},\"_2\":{\"_1\":37.75,\"_2\":-122.5}},\"pubmedIds\":[\"24743708\",\"24524745\",\"24991388\"]}, {\"coordsLinks\":{\"_1\":{\"_1\":37.75,\"_2\":-122.5},\"_2\":{\"_1\":41.25,\"_2\":-96.0}},\"pubmedIds\":[\"24928323\"]}, {\"coordsLinks\":{\"_1\":{\"_1\":34.75,\"_2\":135.5},\"_2\":{\"_1\":37.75,\"_2\":-122.5}},\"pubmedIds\":[\"24739961\"]}, {\"coordsLinks\":{\"_1\":{\"_1\":37.75,\"_2\":-122.5},\"_2\":{\"_1\":42.5,\"_2\":-71.25}},\"pubmedIds\":[\"24777602\"]}, {\"coordsLinks\":{\"_1\":{\"_1\":51.75,\"_2\":-0.25},\"_2\":{\"_1\":37.75,\"_2\":-122.5}},\"pubmedIds\":[\"24412476\"]}, {\"coordsLinks\":{\"_1\":{\"_1\":35.75,\"_2\":139.75},\"_2\":{\"_1\":-35.0,\"_2\":138.5}},\"pubmedIds\":[\"24385943\"]}, {\"coordsLinks\":{\"_1\":{\"_1\":33.75,\"_2\":-84.5},\"_2\":{\"_1\":35.25,\"_2\":-90.0}},\"pubmedIds\":[\"24572428\"]}, {\"coordsLinks\":{\"_1\":{\"_1..."
+      },
+      "dateCreated": "Aug 15, 2015 11:30:41 AM",
+      "dateStarted": "Aug 18, 2015 4:48:41 PM",
+      "dateFinished": "Aug 18, 2015 4:49:11 PM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "dfRounded.select(\"roundedCoordinates\").flatMap({case Row(l:List[Any]) \u003d\u003e l.map (x \u003d\u003e (x,1))}).reduceByKey((a, b) \u003d\u003e a + b).take(3)",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        }
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1439826103436_-1686688771",
+      "id": "20150817-174143_1336773065",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "res370: Array[(Any, Int)] \u003d Array(([-27.5,153.0],3), ([-23.5,-46.75],2), ([13.0,77.5],2))\n"
+      },
+      "dateCreated": "Aug 17, 2015 5:41:43 PM",
+      "dateStarted": "Aug 19, 2015 8:31:35 AM",
+      "dateFinished": "Aug 19, 2015 8:31:42 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "config": {},
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1439965724468_412940796",
+      "id": "20150819-082844_859301176",
+      "dateCreated": "Aug 19, 2015 8:28:44 AM",
+      "status": "READY",
+      "progressUpdateIntervalMs": 500
+    }
+  ],
+  "name": "03 fun starts",
+  "id": "2AY3FX2P6",
+  "angularObjects": {},
+  "config": {
+    "looknfeel": "default"
+  },
+  "info": {}
+}
