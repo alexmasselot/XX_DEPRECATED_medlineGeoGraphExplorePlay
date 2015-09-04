@@ -1,6 +1,6 @@
 package demo
 
-import ch.twenty.medlineGraph.explore.{CitationsWithLocations, SparkCommons}
+import ch.twenty.medlineGeo.explore.{SparkCommons, CitationsWithLocations}
 import org.apache.spark.sql.DataFrame
 import play.api.mvc._
 

@@ -1,4 +1,4 @@
-package ch.twenty.medlineGraph.explore
+package ch.twenty.medlineGeo.explore
 
 import org.apache.spark.sql.DataFrame
 import play.api.cache.Cached

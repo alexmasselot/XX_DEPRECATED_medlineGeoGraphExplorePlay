@@ -1,4 +1,4 @@
-package ch.twenty.medlineGraph.explore
+package ch.twenty.medlineGeo.explore
 
 import java.io.File
 
